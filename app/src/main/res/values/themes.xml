@@ -1,0 +1,15 @@
+<resources xmlns:tools="http://schemas.android.com/tools">
+    <!-- Base application theme. -->
+    <style name="Base.Theme.MyApplication" parent="Theme.AppCompat.Light.NoActionBar">
+        <item name="android:forceDarkAllowed" tools:targetApi="tiramisu">false</item>
+        <!-- Customize your light theme here. -->
+        <!-- <item name="colorPrimary">@color/my_light_primary</item> -->
+        <item name="colorPrimaryDark">@color/gray1</item>
+        <item name="fontFamily">@font/montserrat_light</item>
+        <item name="android:textColor">@color/black</item>
+        <item name="android:windowLightStatusBar">true</item>
+
+    </style>
+
+    <style name="Theme.MyApplication" parent="Base.Theme.MyApplication" />
+</resources>
