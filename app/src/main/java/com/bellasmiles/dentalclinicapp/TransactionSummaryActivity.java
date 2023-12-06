@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
+import android.view.View;
 import android.view.Window;
 import android.widget.Toast;
 
@@ -35,6 +36,8 @@ public class TransactionSummaryActivity extends AppCompatActivity {
         setContentView(binding.getRoot());
 
         apiService = ApiClientRx.getClient(Constants.BASE_URL).create(ApiService.class);
+        binding.toolbar.ivProfile.setVisibility(View.GONE);
+        binding.toolbar.ivHistory.setVisibility(View.GONE);
 
         Intent intent = getIntent();
         String selectedDoctor = intent.getStringExtra("selectedDoctor");
@@ -49,7 +52,7 @@ public class TransactionSummaryActivity extends AppCompatActivity {
         binding.tvSelectedDoctor.setText(selectedDoctor);
         binding.tvSelectedService.setText(selectedService);
         binding.tvSelectedTimeschedule.setText(selectedTimeSchedule);
-        binding.tvCost.setText(serviceCost+".00");
+        binding.tvCost.setText("Php "+serviceCost+".00");
 
         binding.btnConfirm.setOnClickListener(view -> {
             Dialog loadingDialog = new Dialog(TransactionSummaryActivity.this);

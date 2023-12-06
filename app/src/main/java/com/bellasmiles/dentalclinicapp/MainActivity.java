@@ -4,10 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -19,6 +23,7 @@ import com.bellasmiles.dentalclinicapp.api.ApiClientRx;
 import com.bellasmiles.dentalclinicapp.api.ApiService;
 import com.bellasmiles.dentalclinicapp.constant.Constants;
 import com.bellasmiles.dentalclinicapp.databinding.ActivityMainBinding;
+import com.bellasmiles.dentalclinicapp.databinding.DialogProfileBinding;
 import com.bellasmiles.dentalclinicapp.interfaces.OnItemClickListener;
 import com.bellasmiles.dentalclinicapp.model.DoctorModel;
 import com.bellasmiles.dentalclinicapp.model.ScheduleModel;
@@ -65,11 +70,33 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         apiService = ApiClientRx.getClient(Constants.BASE_URL).create(ApiService.class);
 
         binding.toolbar.ivHistory.setOnClickListener(view -> {
-            Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show();
+           Constants.gotoActivity(this, BookingHistoryActivity.class);
         });
 
         binding.toolbar.ivProfile.setOnClickListener(view -> {
-            Toast.makeText(this, "Coming soon!", Toast.LENGTH_SHORT).show();
+
+            Dialog profileDialog = new Dialog(MainActivity.this);
+            profileDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);//...........
+            profileDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+            DialogProfileBinding binding1 = DialogProfileBinding.inflate(profileDialog.getLayoutInflater());
+            profileDialog.setContentView(binding1.getRoot());
+
+            binding1.tvFullname.setText(sharedPrefManager.getClientFirstName()+" "+sharedPrefManager.getClientMiddleName()+" "+sharedPrefManager.getClientLastName());
+            binding1.tvAddress.setText(sharedPrefManager.getClientAddress());
+            binding1.tvBirthdate.setText(sharedPrefManager.getClientBirthdate());
+            binding1.tvEmailaddress.setText(sharedPrefManager.getClientEmailAddress());
+            binding1.tvGender.setText(sharedPrefManager.getClientGender());
+            binding1.tvContactnumberr.setText(sharedPrefManager.getClientContactNo());
+
+            binding1.btnLogout.setOnClickListener(v->{
+                sharedPrefManager.logoutClient();
+                Constants.gotoActivity(this, LoginActivity.class);
+                finish();
+                finishAffinity();
+                    });
+
+            profileDialog.setCancelable(true);
+            profileDialog.show();
         });
 
         binding.ivScheduledate.setOnClickListener(view -> {
@@ -294,7 +321,6 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                                     scheduleAdapter = new ScheduleAdapter(MainActivity.this, timeList);
                                     binding.rvTimeschedule.setAdapter(scheduleAdapter);
 
-
                                     if(scheduleAdapter.getItemCount() == 0){
                                         Toast.makeText(MainActivity.this, "No appointment schedule for this date", Toast.LENGTH_SHORT).show();
                                     }
@@ -402,8 +428,8 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
         }
     }
     private boolean isValidService(Spinner sService){
-        if (selectedDoctor.isEmpty()){
-            ((TextView)sService.getSelectedView()).setError("Doctor is required");
+        if (selectedService.isEmpty()){
+            ((TextView)sService.getSelectedView()).setError("Service is required");
             return false;
         }
 

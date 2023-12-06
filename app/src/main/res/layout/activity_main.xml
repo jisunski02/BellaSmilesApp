@@ -34,11 +34,6 @@
                 android:layout_height="wrap_content"
                 android:background="@color/MainLightColor">
 
-                <ImageView
-                    android:src="@drawable/tooth_icon"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
-                    android:layout_marginEnd="10dp"/>
 
                 <TextView
                     android:layout_width="wrap_content"

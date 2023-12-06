@@ -194,6 +194,7 @@ public class LoginActivity extends AppCompatActivity {
                         .subscribeWith(new DisposableSingleObserver<LoginRegisterModel>() {
                             @Override
                             public void onSuccess(LoginRegisterModel response) {
+
                                 String success = response.getSuccess();
                                 String username = response.getUsername();
 
@@ -201,10 +202,12 @@ public class LoginActivity extends AppCompatActivity {
                                     getClientProfile(dialog, username);
                                 }
                                 else if(success.equals("0")){
+                                    dialog.dismiss();
                                     Toast.makeText(LoginActivity.this, "Account does not exist", Toast.LENGTH_SHORT).show();
                                 }
 
                                 else{
+                                    dialog.dismiss();
                                     Toast.makeText(LoginActivity.this, "Failed to login", Toast.LENGTH_SHORT).show();
                                 }
 

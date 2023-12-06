@@ -5,14 +5,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/gray1"
-    tools:context=".TransactionSummaryActivity">
+    android:background="@android:color/transparent">
 
-    <include
-        android:id="@+id/toolbar"
-        layout="@layout/app_toolbar"
-        tools:layout_editor_absoluteX="0dp"
-        tools:layout_editor_absoluteY="0dp" />
 
     <ImageView
         android:layout_width="50dp"
@@ -27,7 +21,7 @@
 
     <androidx.cardview.widget.CardView
         android:id="@+id/cardView"
-        android:layout_width="match_parent"
+        android:layout_width="310dp"
         android:layout_height="wrap_content"
         android:layout_margin="20dp"
         app:cardCornerRadius="20dp"
@@ -45,36 +39,28 @@
             >
 
             <TextView
-                android:layout_marginTop="20dp"
+                android:layout_marginTop="10dp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:textColor="@color/black"
                 android:textStyle="bold"
-                android:textSize="25sp"
+                android:textSize="22sp"
                 android:layout_gravity="center"
-                android:text="Transaction Summary"/>
-
-            <TextView
-                android:layout_marginTop="10dp"
-                android:textSize="15sp"
-                android:textColor="@color/black"
-                android:text="Please check if all the information that you have provided are correct"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"/>
+                android:text="Appointment Details"/>
 
 
             <TextView
                 android:layout_marginTop="20dp"
-                android:textSize="15sp"
+                android:textSize="13sp"
                 android:textColor="@color/black"
-                android:text="Selected Doctor"
+                android:text="Doctor"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <TextView
                 android:id="@+id/tv_selected_doctor"
                 android:layout_marginTop="3dp"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textColor="@color/black"
                 android:text="Joseph Ponadon"
                 android:textStyle="bold"
@@ -83,16 +69,16 @@
 
             <TextView
                 android:layout_marginTop="10dp"
-                android:textSize="15sp"
+                android:textSize="13sp"
                 android:textColor="@color/black"
-                android:text="Selected Service"
+                android:text="Service"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <TextView
                 android:id="@+id/tv_selected_service"
                 android:layout_marginTop="3dp"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textColor="@color/black"
                 android:text="Dental Sealants"
                 android:textStyle="bold"
@@ -101,16 +87,16 @@
 
             <TextView
                 android:layout_marginTop="10dp"
-                android:textSize="15sp"
+                android:textSize="13sp"
                 android:textColor="@color/black"
-                android:text="Selected Date and Time of Schedule"
+                android:text="Date and Time of Schedule"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"/>
 
             <TextView
                 android:id="@+id/tv_selected_timeschedule"
                 android:layout_marginTop="3dp"
-                android:textSize="18sp"
+                android:textSize="16sp"
                 android:textColor="@color/black"
                 android:text="2023/12/05  8:00AM to 5:00PM"
                 android:textStyle="bold"
@@ -124,7 +110,7 @@
                 android:layout_height="wrap_content">
 
                 <TextView
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textColor="@color/black"
                     android:textStyle="bold"
                     android:text="TOTAL"
@@ -135,7 +121,7 @@
 
                 <TextView
                     android:id="@+id/tv_cost"
-                    android:textSize="18sp"
+                    android:textSize="16sp"
                     android:textColor="@color/black"
                     android:textStyle="bold"
                     android:text="Php 1600.00"
@@ -153,11 +139,11 @@
                 android:layout_height="1dp"/>
 
             <Button
-                android:id="@+id/btn_confirm"
+                android:id="@+id/btn_close"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="@drawable/clickedchangecolorbutton"
-                android:text="CONFIRM"
+                android:background="@drawable/selected_schedule_bg"
+                android:text="CLOSE"
                 android:layout_marginTop="60dp"
                 android:textColor="@color/white"
                 android:textSize="15sp"

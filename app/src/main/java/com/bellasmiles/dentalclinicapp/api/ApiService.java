@@ -1,5 +1,6 @@
 package com.bellasmiles.dentalclinicapp.api;
 
+import com.bellasmiles.dentalclinicapp.model.AppointmentModel;
 import com.bellasmiles.dentalclinicapp.model.ClientProfileModel;
 import com.bellasmiles.dentalclinicapp.model.DoctorModel;
 import com.bellasmiles.dentalclinicapp.model.LoginRegisterModel;
@@ -58,6 +59,12 @@ public interface ApiService {
                                                @Field("doctor_id") String doctor_id,
                                                @Field("service_id") String service_id,
                                                @Field("schedule_id") String schedule_id
+    );
+
+    @POST("viewBookingHistory.php")
+    @FormUrlEncoded
+    Single<List<AppointmentModel>> appointmentHistory(@Field("client_id") String client_id,
+                                                @Field("status") String status
     );
 
 }

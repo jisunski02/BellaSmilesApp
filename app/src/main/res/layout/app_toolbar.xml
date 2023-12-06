@@ -30,6 +30,15 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
+                <ImageView
+                    android:id="@+id/iv_tooth"
+                    android:src="@drawable/tooth_icon"
+                    android:layout_width="20dp"
+                    android:layout_height="20dp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintBottom_toBottomOf="parent"/>
+
                 <TextView
                     android:id="@+id/activity_title"
                     android:layout_width="wrap_content"
@@ -38,8 +47,8 @@
                     android:text="Bella Smiles"
                     android:textStyle="bold"
                     android:textColor="@color/black"
-                    android:layout_marginStart="10dp"
-                    app:layout_constraintStart_toStartOf="parent"
+                    android:layout_marginStart="5dp"
+                    app:layout_constraintStart_toEndOf="@+id/iv_tooth"
                     app:layout_constraintTop_toTopOf="parent"
                     app:layout_constraintBottom_toBottomOf="parent"/>
 
