@@ -29,7 +29,7 @@ public class ApiClientRx {
                     .connectTimeout(60, TimeUnit.SECONDS);
             httpClient.addInterceptor(logging);
 
-            httpClient.protocols(Util.immutableList(Protocol.HTTP_1_1));
+            httpClient.protocols(Util.immutableListOf(Protocol.HTTP_1_1));
 
             OkHttpClient client = httpClient.build();
             client.dispatcher().cancelAll();

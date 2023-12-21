@@ -10,8 +10,8 @@ android {
         applicationId "com.bellasmiles.dentalclinicapp"
         minSdk 26
         targetSdk 34
-        versionCode 4
-        versionName "2.0"
+        versionCode 7
+        versionName "2.6.0"
 
         testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
     }
@@ -76,5 +76,7 @@ dependencies {
 
     implementation 'com.wdullaer:materialdatetimepicker:3.5.1'
 
+    //Paypal
+    implementation('com.paypal.checkout:android-sdk:1.2.0')
 
 }

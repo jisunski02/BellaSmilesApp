@@ -58,6 +58,16 @@ public interface ApiService {
     Single<LoginRegisterModel> bookAppointment(@Field("client_id") String client_id,
                                                @Field("doctor_id") String doctor_id,
                                                @Field("service_id") String service_id,
+                                               @Field("schedule_id") String schedule_id,
+                                               @Field("payment_status") String payment_status,
+                                               @Field("payment_type") String payment_type
+    );
+
+    @POST("checkAppointmentIfExisting.php")
+    @FormUrlEncoded
+    Single<LoginRegisterModel> checkIfAppointmentExisting(@Field("client_id") String client_id,
+                                               @Field("doctor_id") String doctor_id,
+                                               @Field("service_id") String service_id,
                                                @Field("schedule_id") String schedule_id
     );
 

@@ -1,5 +1,6 @@
 package com.bellasmiles.dentalclinicapp;
 
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.app.Dialog;
@@ -16,12 +17,31 @@ import com.bellasmiles.dentalclinicapp.api.ApiService;
 import com.bellasmiles.dentalclinicapp.constant.Constants;
 import com.bellasmiles.dentalclinicapp.databinding.ActivityTransactionSummaryBinding;
 import com.bellasmiles.dentalclinicapp.model.LoginRegisterModel;
+import com.paypal.checkout.approve.Approval;
+import com.paypal.checkout.approve.OnApprove;
+import com.paypal.checkout.cancel.OnCancel;
+import com.paypal.checkout.createorder.CreateOrder;
+import com.paypal.checkout.createorder.CreateOrderActions;
+import com.paypal.checkout.createorder.CurrencyCode;
+import com.paypal.checkout.createorder.OrderIntent;
+import com.paypal.checkout.createorder.UserAction;
+import com.paypal.checkout.error.ErrorInfo;
+import com.paypal.checkout.error.OnError;
+import com.paypal.checkout.order.Amount;
+import com.paypal.checkout.order.AppContext;
+import com.paypal.checkout.order.CaptureOrderResult;
+import com.paypal.checkout.order.OnCaptureComplete;
+import com.paypal.checkout.order.OrderRequest;
+import com.paypal.checkout.order.PurchaseUnit;
+
+import org.jetbrains.annotations.NotNull;
 
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
+import java.util.ArrayList;
 import java.util.Date;
 
 import io.reactivex.android.schedulers.AndroidSchedulers;
@@ -63,7 +83,6 @@ public class TransactionSummaryActivity extends AppCompatActivity {
         String clientId = intent.getStringExtra("clientId");
         String serviceId = intent.getStringExtra("serviceId");
 
-
         String startTime = LocalTime.parse(selectedStartTime).format(DateTimeFormatter.ofPattern("h:mma"));
         String endTime = LocalTime.parse(selectedEndTime).format(DateTimeFormatter.ofPattern("h:mma"));
 
@@ -82,15 +101,85 @@ public class TransactionSummaryActivity extends AppCompatActivity {
             loadingDialog.setCancelable(false);
             loadingDialog.show();
 
-            bookAppointment(loadingDialog, clientId, doctorId, serviceId, scheduleId);
+            bookAppointment(loadingDialog, clientId, doctorId, serviceId, scheduleId, "No", "OTC");
         });
+
+
+        binding.paymentButtonContainer.setup(
+                new CreateOrder() {
+                    @Override
+                    public void create(@NotNull CreateOrderActions createOrderActions) {
+                        Toast.makeText(TransactionSummaryActivity.this, "Setting up Paypal", Toast.LENGTH_SHORT).show();
+                        ArrayList<PurchaseUnit> purchaseUnits = new ArrayList<>();
+                        purchaseUnits.add(
+                                new PurchaseUnit.Builder()
+                                        .amount(
+                                                new Amount.Builder()
+                                                        .currencyCode(CurrencyCode.PHP)
+                                                        .value(serviceCost)
+                                                        .build()
+                                        )
+                                        .build()
+                        );
+                        OrderRequest order = new OrderRequest(
+                                OrderIntent.CAPTURE,
+                                new AppContext.Builder()
+                                        .userAction(UserAction.PAY_NOW)
+                                        .build(),
+                                purchaseUnits
+                        );
+                        createOrderActions.create(order, (CreateOrderActions.OnOrderCreated) null);
+                    }
+                },
+                new OnApprove() {
+                    @Override
+                    public void onApprove(@NotNull Approval approval) {
+                        approval.getOrderActions().capture(result -> {
+
+                            Toast.makeText(TransactionSummaryActivity.this, "Payment Successful", Toast.LENGTH_SHORT).show();
+
+                                Dialog loadingDialog = new Dialog(TransactionSummaryActivity.this);
+                                loadingDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);//...........
+                                loadingDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                                loadingDialog.setContentView(R.layout.dialog_loading);
+
+
+                                loadingDialog.setCancelable(false);
+                                loadingDialog.show();
+
+                                bookAppointment(loadingDialog, clientId, doctorId, serviceId, scheduleId, "Yes","PayPal");
+                        });
+
+                        new OnCancel() {
+                            @Override
+                            public void onCancel() {
+                                Toast.makeText(TransactionSummaryActivity.this, "Payment cancelled", Toast.LENGTH_SHORT).show();
+
+                            }
+
+                        };
+
+                        new OnError() {
+                            @Override
+                            public void onError(@NotNull ErrorInfo errorInfo) {
+                                Toast.makeText(TransactionSummaryActivity.this, errorInfo.toString(), Toast.LENGTH_SHORT).show();
+
+                            }
+                        };
+
+                    }
+
+
+
+                }
+        );
 
     }
 
-    private void bookAppointment(Dialog dialog, String clientId, String doctorId, String serviceId, String scheduleId) {
+    private void bookAppointment(Dialog dialog, String clientId, String doctorId, String serviceId, String scheduleId, String payment_status, String payment_type) {
 
         disposable.add(
-                apiService.bookAppointment(clientId, doctorId, serviceId, scheduleId)
+                apiService.bookAppointment(clientId, doctorId, serviceId, scheduleId, payment_status, payment_type)
                         .subscribeOn(Schedulers.io())
                         .observeOn(AndroidSchedulers.mainThread())
                         .subscribeWith(new DisposableSingleObserver<LoginRegisterModel>() {

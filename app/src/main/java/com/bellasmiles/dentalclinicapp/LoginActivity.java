@@ -250,7 +250,7 @@ public class LoginActivity extends AppCompatActivity {
                                     sharedPrefManager.setClientBirthdate(clientProfileModel.getClientBirthdate());
 
                                     Toast.makeText(LoginActivity.this, "Logged in successful", Toast.LENGTH_SHORT).show();
-                                    Constants.gotoActivity(LoginActivity.this, MainActivity.class);
+                                    Constants.gotoActivity(LoginActivity.this, HomeActivity.class);
                                     finish();
                                 }
 

@@ -51,7 +51,7 @@ public class BookingHistoryAdapter extends RecyclerView.Adapter<BookingHistoryAd
 
         holder.binding.tvDatetimeschedule.setText(appointmentModel.getSchedDate());
         holder.binding.tvService.setText(appointmentModel.getServDesc());
-        holder.binding.tvCost.setText("Php "+appointmentModel.getServCost()+"0.00");
+        holder.binding.tvCost.setText("Php "+appointmentModel.getServCost()+".00");
         holder.binding.tvTimeSchedule.setText(startTime+" to "+endTime);
 
         holder.binding.ivSeemore.setOnClickListener(view -> {

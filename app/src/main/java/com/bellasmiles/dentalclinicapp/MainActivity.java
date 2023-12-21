@@ -4,10 +4,14 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.GridLayoutManager;
 import androidx.recyclerview.widget.LinearLayoutManager;
 
+import android.app.Dialog;
 import android.content.Intent;
+import android.graphics.Color;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.View;
+import android.view.Window;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Spinner;
@@ -21,6 +25,7 @@ import com.bellasmiles.dentalclinicapp.constant.Constants;
 import com.bellasmiles.dentalclinicapp.databinding.ActivityMainBinding;
 import com.bellasmiles.dentalclinicapp.interfaces.OnItemClickListener;
 import com.bellasmiles.dentalclinicapp.model.DoctorModel;
+import com.bellasmiles.dentalclinicapp.model.LoginRegisterModel;
 import com.bellasmiles.dentalclinicapp.model.ScheduleModel;
 import com.bellasmiles.dentalclinicapp.model.ServiceModel;
 import com.bellasmiles.dentalclinicapp.sharedpreferences.LoginSharedPrefManager;
@@ -81,18 +86,16 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
             }
 
             if(isValidDoctor(binding.spinnerDoctor) && isValidService(binding.spinnerService) && isValidSchedule()){
-                Intent intent = new Intent(this, TransactionSummaryActivity.class);
-                intent.putExtra("selectedDoctor", selectedDoctor);
-                intent.putExtra("selectedService", selectedService);
-                intent.putExtra("selectedDate", selectedDate);
-                intent.putExtra("selectedStartTime", selectedStartTime);
-                intent.putExtra("selectedEndTime", selectedEndTime);
-                intent.putExtra("serviceCost", serviceCost);
-                intent.putExtra("doctorId", doctorId);
-                intent.putExtra("scheduleId", scheduleId);
-                intent.putExtra("clientId", sharedPrefManager.getClientId());
-                intent.putExtra("serviceId", serviceId);
-                startActivity(intent);
+                Dialog loadingDialog = new Dialog(MainActivity.this);
+                loadingDialog.requestWindowFeature(Window.FEATURE_NO_TITLE);//...........
+                loadingDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+                loadingDialog.setContentView(R.layout.dialog_loading);
+
+
+                loadingDialog.setCancelable(false);
+                loadingDialog.show();
+
+                checkAppointment(loadingDialog, clientId, doctorId, serviceId, scheduleId);
             }
 
 
@@ -346,6 +349,54 @@ public class MainActivity extends AppCompatActivity implements DatePickerDialog.
                             @Override
                             public void onError(Throwable e) {
 
+                                if(Constants.isNetworkConnected(MainActivity.this)){
+                                    Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
+                                }
+
+                                else {
+                                    Toast.makeText(MainActivity.this, "No Internet Connection", Toast.LENGTH_SHORT).show();
+                                }
+                            }
+                        }));
+    }
+
+    private void checkAppointment(Dialog dialog, String clientId, String doctorId, String serviceId, String scheduleId) {
+
+        disposable.add(
+                apiService.checkIfAppointmentExisting(clientId, doctorId, serviceId, scheduleId)
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribeWith(new DisposableSingleObserver<LoginRegisterModel>() {
+                            @Override
+                            public void onSuccess(LoginRegisterModel response) {
+                                String success = response.getSuccess();
+                                dialog.dismiss();
+                                if(success.equals("1")){
+                                    Intent intent = new Intent(MainActivity.this, TransactionSummaryActivity.class);
+                                    intent.putExtra("selectedDoctor", selectedDoctor);
+                                    intent.putExtra("selectedService", selectedService);
+                                    intent.putExtra("selectedDate", selectedDate);
+                                    intent.putExtra("selectedStartTime", selectedStartTime);
+                                    intent.putExtra("selectedEndTime", selectedEndTime);
+                                    intent.putExtra("serviceCost", serviceCost);
+                                    intent.putExtra("doctorId", doctorId);
+                                    intent.putExtra("scheduleId", scheduleId);
+                                    intent.putExtra("clientId", sharedPrefManager.getClientId());
+                                    intent.putExtra("serviceId", serviceId);
+                                    startActivity(intent);
+                                }
+                                else if(success.equals("0")){
+                                    Toast.makeText(MainActivity.this, "No availability at chosen time", Toast.LENGTH_SHORT).show();
+                                }
+
+                                else{
+                                    Toast.makeText(MainActivity.this, "Failed to book appointment", Toast.LENGTH_SHORT).show();
+                                }
+
+                            }
+                            @Override
+                            public void onError(Throwable e) {
+                                dialog.dismiss();
                                 if(Constants.isNetworkConnected(MainActivity.this)){
                                     Toast.makeText(MainActivity.this, e.toString(), Toast.LENGTH_SHORT).show();
                                 }
